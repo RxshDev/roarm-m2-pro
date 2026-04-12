@@ -69,7 +69,7 @@ def send_command(command: dict):
 
 
 # Define movement sequence
-# Each entry: (description, command, wait_time) -> tuple with human-readable description, JSON command, and wait time after sending
+# Each entry: (description, command) -> tuple with human-readable description, JSON command, and wait time after sending
 sequence = [
     ("Home position",
      {"T":102,"base":0,"shoulder":0,"elbow":1.6,"hand":3.14,"spd":500,"acc":10}),
