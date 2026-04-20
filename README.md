@@ -27,8 +27,13 @@
 ```
 roarm-m2-pro/
 └── roarm_tests/
-    ├── test_connection.py   # Serial connection test + manual JSON input
-    └── sequenz.py           # Position-based movement sequence
+    ├── logging_config.py      # Centralized logging configuration
+    ├── test_connection.py      # Serial connection test + manual JSON input
+    ├── sequenz.py              # Position-based movement sequence
+    ├── .gitignore              # Exclude logs and cache from git
+    └── logs/                   # Runtime logs (auto-generated, not in git)
+        ├── roarm_debug.log     # Logs from test_connection.py
+        └── roarm_sequence.log  # Logs from sequenz.py
 ```
 
 ## Getting Started
@@ -71,6 +76,49 @@ python roarm_tests/sequenz.py
 ```
 
 The arm executes 6 steps with position-based control — each step waits until the target position is confirmed before proceeding.
+
+## Logging
+
+Both scripts automatically log all operations to the `logs/` directory:
+
+- **`roarm_debug.log`** — Connection tests and manual command execution
+- **`roarm_sequence.log`** — Movement sequence execution and timing
+
+Log files are automatically rotated when they exceed 5MB. The last 5 backups are preserved.
+
+**Log levels:**
+- `DEBUG` — Detailed command/response info (file only)
+- `INFO` — Important events (console + file)
+- `WARNING` — Warnings like user cancellations (console + file)
+- `ERROR` — Critical failures (console + file)
+
+Example log entry:
+```
+2026-04-20 14:32:15 - __main__ - INFO - Serial port opened: /dev/ttyUSB0
+2026-04-20 14:32:16 - __main__ - INFO - Step 1/6: Home position
+2026-04-20 14:32:20 - __main__ - INFO - Target position reached (stable)
+```
+
+The `logs/` directory is excluded from git via `.gitignore` to keep the repository clean.
+
+## Optimizations
+
+The control scripts have been optimized for reliability and performance:
+
+**Serial Communication**
+- Immediate buffer flushing after commands for faster responsiveness
+- Reduced communication delays (0.5s → 0.2s for commands)
+- Optimized polling rate for position feedback
+
+**Position Control**
+- Stability verification (2 consecutive stable readings before confirming target)
+- Smart output filtering (reduces console spam during movement)
+- Individual joint tolerance checking
+
+**Code Quality**
+- Centralized logging configuration (`logging_config.py`) — DRY principle
+- Comprehensive error handling with detailed logging
+- Guard against duplicate logging handlers
 
 ## JSON Command Reference
 
