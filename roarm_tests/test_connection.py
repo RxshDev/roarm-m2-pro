@@ -19,7 +19,6 @@ def read_serial():
                 data = ser.readline().decode('utf-8', errors='ignore')
                 if data:
                     logger.info(f"Response from the arm: {data.strip()}")
-                    print(f"Response from the arm: {data}", end='')
     except Exception as e:
         logger.error(f"Error in read_serial: {e}")
 
@@ -60,9 +59,9 @@ def close_connection():
 
 def main():
     """Main function to run the serial communication interface."""
+    logger.info("")
     logger.info("=== RoArm Serial Communication Test ===")
     logger.info(f"Log file: {log_file_path}")
-    print(f"\n📁 Logs are being saved to: {log_file_path}\n")
     
     # Ask user for confirmation before connecting
     response = input("Do you want to connect to the arm? (yes/no): ").strip().lower()

@@ -151,9 +151,9 @@ sequence = [
 
 
 def main():
+    logger.info("")
     logger.info("=== RoArm Movement Sequence Test Started ===")
     logger.info(f"Log file: {log_file_path}")
-    print(f"\n📁 Logs are being saved to: {log_file_path}\n")
     
     # Open serial connection
     try:
@@ -167,14 +167,11 @@ def main():
     except serial.SerialException as e:
         logger.error(f"Failed to open serial port: {e}")
         logger.error("Check if the arm is connected and powered on.")
-        print(f"  Failed to open serial port: {e}")
-        print("  Check if the arm is connected and powered on.")
         sys.exit(1)
 
     # Test connection
     if not test_connection(ser):
         logger.error("Connection test failed. Exiting.")
-        print("\nConnection test failed. Exiting.")
         ser.close()
         sys.exit(1)
 
@@ -182,7 +179,6 @@ def main():
     print("RoArm-M2-Pro Movement Sequence")
     print("="*50)
     logger.info(f"Sequence contains {len(sequence)} steps")
-    print(f"\nSequence contains {len(sequence)} steps")
     print()
     
     # Wait for user input
@@ -190,30 +186,25 @@ def main():
         input("Press ENTER to start the sequence (or Ctrl+C to cancel)... ")
     except KeyboardInterrupt:
         logger.info("Sequence cancelled by user.")
-        print("\n\nSequence cancelled by user.")
         ser.close()
         sys.exit(0)
 
     # Execute sequence
+    logger.info("")
     logger.info("=== Sequence started ===")
-    print("\n=== Sequence started ===\n")
 
     try:
         for step, (description, command) in enumerate(sequence, 1):
-            print(f"Step {step}/{len(sequence)}: {description}")
             logger.info(f"Step {step}/{len(sequence)}: {description}")
             send_command(ser, command)
             print()
 
         logger.info("=== Sequence completed successfully ===")
-        print("=== Sequence completed ===")
     except KeyboardInterrupt:
         logger.warning("Sequence interrupted by user.")
-        print("\n\nSequence interrupted by user.")
     finally:
         ser.close()
         logger.info("Serial connection closed.")
-        print("\nSerial connection closed.")
 
 
 if __name__ == "__main__":
