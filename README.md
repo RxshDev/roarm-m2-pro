@@ -41,13 +41,13 @@ roarm-m2-pro/
 ### Requirements
 
 ```bash
-pip install pyserial
+pip install -r requirements.txt
 ```
 
 ### Connect the Arm
 
 1. Connect 12V 5A power supply
-2. Connect USB cable to ThinkPad
+2. Connect USB cable to computer
 3. Power on the arm — joints move to home position
 4. Verify connection:
 
