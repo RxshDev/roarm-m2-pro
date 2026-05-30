@@ -26,15 +26,35 @@
 
 ```
 roarm-m2-pro/
+├── pyproject.toml             # pytest configuration
+├── requirements.txt          # Runtime dependency (pyserial)
+├── requirements-dev.txt      # Dev dependencies (pytest)
 └── scripts/
+    ├── roarm/                 # Control library (two layers)
+    │   ├── __init__.py        # Exports: RoArm, SerialTransport, Command, JOINT_KEYS
+    │   ├── transport.py       # SerialTransport — serial I/O only
+    │   └── controller.py      # RoArm — commands & feedback-driven motion
     ├── logging_config.py      # Centralized logging configuration
-    ├── serial_console.py      # Interactive JSON command console
-    ├── demo_sequence.py       # Position-based movement demo
-    ├── .gitignore             # Exclude logs and cache from git
+    ├── serial_console.py      # Interactive JSON command console (thin app)
+    ├── demo_sequence.py       # Position-based movement demo (thin app)
+    ├── tests/                 # Unit tests (pytest, no hardware needed)
+    │   ├── conftest.py        # FakeTransport + fixtures
+    │   ├── test_controller.py # RoArm logic
+    │   └── test_transport.py  # SerialTransport line encoding/decoding
     └── logs/                  # Runtime logs (auto-generated, not in git)
         ├── roarm_debug.log    # Logs from serial_console.py
         └── roarm_sequence.log # Logs from demo_sequence.py
 ```
+
+**Architecture** — the arm-control logic lives in the `roarm` package, split into
+two layers so it can be unit-tested without hardware:
+
+- `SerialTransport` knows the *wire* (open/close/read/write over serial).
+- `RoArm` knows the arm's *language* (`move_joints`, `home`, `set_torque`,
+  `get_feedback`, feedback-driven `wait_until_reached`) and talks to the arm
+  through an injected transport.
+
+The two scripts are thin apps that configure logging and drive a `RoArm`.
 
 ## Getting Started
 
@@ -76,6 +96,19 @@ python scripts/demo_sequence.py
 ```
 
 The arm executes 6 steps with position-based control — each step waits until the target position is confirmed before proceeding.
+
+## Running Tests
+
+The `RoArm` logic is unit-tested against a fake transport, so the tests run
+without the physical arm. On Arch (PEP 668) use a virtual environment:
+
+```bash
+python -m venv --system-site-packages .venv   # keeps system pyserial available
+.venv/bin/pip install -r requirements-dev.txt
+.venv/bin/python -m pytest
+```
+
+`pytest` reads its configuration from `pyproject.toml` (test path and import path).
 
 ## Logging
 

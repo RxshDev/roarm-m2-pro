@@ -1,0 +1,14 @@
+# Virtual environments
+venv/
+.venv/
+env/
+.env
+
+# Test / build cache
+.pytest_cache/
+__pycache__/
+*.py[cod]
+
+# Runtime logs
+logs/
+*.log
