@@ -26,14 +26,14 @@
 
 ```
 roarm-m2-pro/
-└── roarm_tests/
+└── scripts/
     ├── logging_config.py      # Centralized logging configuration
-    ├── test_connection.py      # Serial connection test + manual JSON input
-    ├── sequenz.py              # Position-based movement sequence
-    ├── .gitignore              # Exclude logs and cache from git
-    └── logs/                   # Runtime logs (auto-generated, not in git)
-        ├── roarm_debug.log     # Logs from test_connection.py
-        └── roarm_sequence.log  # Logs from sequenz.py
+    ├── serial_console.py      # Interactive JSON command console
+    ├── demo_sequence.py       # Position-based movement demo
+    ├── .gitignore             # Exclude logs and cache from git
+    └── logs/                  # Runtime logs (auto-generated, not in git)
+        ├── roarm_debug.log    # Logs from serial_console.py
+        └── roarm_sequence.log # Logs from demo_sequence.py
 ```
 
 ## Getting Started
@@ -55,10 +55,10 @@ pip install -r requirements.txt
 ls /dev/ttyUSB0
 ```
 
-### Run the Connection Test
+### Run the Serial Console
 
 ```bash
-python roarm_tests/test_connection.py
+python scripts/serial_console.py
 ```
 
 Type JSON commands directly in the terminal:
@@ -69,10 +69,10 @@ Type JSON commands directly in the terminal:
 {"T":210,"cmd":0}
 ```
 
-### Run the Movement Sequence
+### Run the Movement Demo
 
 ```bash
-python roarm_tests/sequenz.py
+python scripts/demo_sequence.py
 ```
 
 The arm executes 6 steps with position-based control — each step waits until the target position is confirmed before proceeding.
@@ -81,8 +81,8 @@ The arm executes 6 steps with position-based control — each step waits until t
 
 Both scripts automatically log all operations to the `logs/` directory:
 
-- **`roarm_debug.log`** — Connection tests and manual command execution
-- **`roarm_sequence.log`** — Movement sequence execution and timing
+- **`roarm_debug.log`** — Serial console session: connection and manual command execution
+- **`roarm_sequence.log`** — Movement demo execution and timing
 
 Log files are automatically rotated when they exceed 5MB. The last 5 backups are preserved.
 
